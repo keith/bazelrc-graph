@@ -21,5 +21,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes graphviz
       - name: Run tests
         run: ./tests/run_tests.py
