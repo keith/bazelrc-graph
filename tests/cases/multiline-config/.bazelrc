@@ -1,0 +1,3 @@
+build --config \
+  opt
+build:opt --compilation_mode=opt
