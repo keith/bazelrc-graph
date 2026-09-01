@@ -1,0 +1,25 @@
+digraph bazelrc {
+  rankdir=LR;
+  fontname="Helvetica";
+  node [fontname="Helvetica"];
+  edge [fontname="Helvetica"];
+
+  // Config graph
+  "config: <default>" [label="default", shape=box];
+  "config: ci" [label="ci", shape=ellipse];
+  "config: lto" [label="lto", shape=ellipse];
+  "config: opt" [label="opt", shape=ellipse];
+  "config: <default>" -> "config: opt";
+  "config: ci" -> "config: opt";
+  "config: opt" -> "config: lto";
+
+  // File import graph
+  subgraph cluster_imports {
+    label="file imports";
+    fontsize=10;
+    style="rounded,dashed";
+    color="#999999";
+    node [shape=note, fontsize=10];
+    "file: .bazelrc" [label=".bazelrc"];
+  }
+}

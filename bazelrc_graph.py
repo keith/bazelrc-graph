@@ -196,8 +196,9 @@ def render_dot(graph):
     has_default = any(source == _DEFAULT for source, _ in graph.config_edges)
     if has_default:
         out(
-            '  {} [label="default", shape=box, style=filled, '
-            'fillcolor="#dddddd"];'.format(config_id(_DEFAULT))
+            '  {} [label="default", shape=box];'.format(
+                config_id(_DEFAULT)
+            )
         )
     for name in all_configs:
         shape = "box" if name in _PLATFORM_CONFIGS else "ellipse"

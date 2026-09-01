@@ -1,0 +1,7 @@
+# A single file with a few configs referencing each other.
+build --config=opt
+build:opt --compilation_mode=opt
+build:opt --config=lto
+build:lto --features=thin_lto
+common:ci --config opt
+test:ci --test_output=errors
