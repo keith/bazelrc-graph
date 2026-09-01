@@ -38,7 +38,7 @@ def run_case(case_dir, update):
                 "--no-png",
                 "--workspace",
                 case_dir,
-                "--output-dir",
+                "-o",
                 out_dir,
                 root_rc,
             ],

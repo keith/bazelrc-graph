@@ -268,6 +268,7 @@ def _main():
         "(default: the directory containing the root bazelrc)",
     )
     parser.add_argument(
+        "-o",
         "--output-dir",
         default=".",
         help="directory the .dot and .png are written to (default: cwd)",
