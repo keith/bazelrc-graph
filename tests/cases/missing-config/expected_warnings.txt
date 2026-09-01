@@ -1,0 +1,2 @@
+warning: config 'alsomissing' is referenced but never defined (.bazelrc:3)
+warning: config 'doesnotexist' is referenced but never defined (.bazelrc:2)

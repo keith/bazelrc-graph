@@ -1,0 +1,25 @@
+digraph bazelrc {
+  rankdir=LR;
+  fontname="Helvetica";
+  node [fontname="Helvetica"];
+  edge [fontname="Helvetica"];
+
+  // Config graph
+  "config: <default>" [label="default", shape=box];
+  "config: alsomissing" [label="alsomissing", shape=ellipse, style=dashed, color="#cc0000", fontcolor="#cc0000"];
+  "config: base" [label="base", shape=ellipse];
+  "config: doesnotexist" [label="doesnotexist", shape=ellipse, style=dashed, color="#cc0000", fontcolor="#cc0000"];
+  "config: <default>" -> "config: alsomissing";
+  "config: <default>" -> "config: base";
+  "config: base" -> "config: doesnotexist";
+
+  // File import graph
+  subgraph cluster_imports {
+    label="file imports";
+    fontsize=10;
+    style="rounded,dashed";
+    color="#999999";
+    node [shape=note, fontsize=10];
+    "file: .bazelrc" [label=".bazelrc"];
+  }
+}
