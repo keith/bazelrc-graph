@@ -6,7 +6,9 @@ Each directory under tests/cases/ is a test case: it contains a root `.bazelrc`
 and an `expected.dot`. A case may also contain an `expected_warnings.txt` with
 the warning lines the tool should print.
 
-Run with --update to regenerate the expected files from current output.
+./tests/run_tests.py            # run all cases
+./tests/run_tests.py simple     # run one case
+./tests/run_tests.py --update   # regenerate expected files
 """
 
 import argparse
