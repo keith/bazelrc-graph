@@ -1,0 +1,2 @@
+warning: config 'bar' is referenced but never defined (.bazelrc:1)
+warning: config 'baz' is referenced but never defined (shared.bazelrc:1)
