@@ -1,0 +1,3 @@
+build:remote --remote_cache=grpcs://cache.example.com
+common --config=defaults
+build:defaults --verbose_failures
