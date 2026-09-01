@@ -146,6 +146,58 @@ def render_smoke_test(case_dir, output_format):
     return True
 
 
+def graphviz_install_hint_test():
+    """Check that missing Graphviz reports detected package-manager hints."""
+    case_dir = os.path.join(CASES_DIR, "simple")
+    with tempfile.TemporaryDirectory() as temp_dir:
+        bin_dir = os.path.join(temp_dir, "bin")
+        out_dir = os.path.join(temp_dir, "out")
+        os.mkdir(bin_dir)
+        for executable in ("brew", "apt"):
+            executable_path = os.path.join(bin_dir, executable)
+            with open(executable_path, "w"):
+                pass
+            os.chmod(executable_path, 0o755)
+
+        env = os.environ.copy()
+        env["PATH"] = bin_dir
+        result = subprocess.run(
+            [
+                sys.executable,
+                TOOL,
+                "--workspace",
+                case_dir,
+                "--output-dir",
+                out_dir,
+                os.path.join(case_dir, ".bazelrc"),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            env=env,
+        )
+
+    expected_error = (
+        "warning: graphviz 'dot' not found, skipping png rendering\n"
+        "hint: install Graphviz with one of:\n"
+        "  brew install graphviz\n"
+        "  sudo apt install graphviz\n"
+    )
+    if result.returncode != 1 or result.stderr != expected_error:
+        print("FAIL Graphviz install hint test")
+        sys.stdout.writelines(
+            difflib.unified_diff(
+                expected_error.splitlines(keepends=True),
+                result.stderr.splitlines(keepends=True),
+                fromfile="expected stderr",
+                tofile="actual stderr",
+            )
+        )
+        return False
+    print("PASS Graphviz install hint test")
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -177,6 +229,7 @@ def main():
         first_case = os.path.join(CASES_DIR, cases[0])
         ok = render_smoke_test(first_case, "png") and ok
         ok = render_smoke_test(first_case, "svg") and ok
+        ok = graphviz_install_hint_test() and ok
 
     if not ok:
         sys.exit(1)
