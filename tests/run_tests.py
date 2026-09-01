@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Test harness for bazelrc_graph.py.
+"""Test harness for bazelrc-graph.
 
 Each directory under tests/cases/ is a test case: it contains a root `.bazelrc`
 and an `expected.dot`. A case may also contain an `expected_warnings.txt` with
@@ -19,7 +19,7 @@ import tempfile
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(TESTS_DIR)
-TOOL = os.path.join(ROOT_DIR, "bazelrc_graph.py")
+TOOL = os.path.join(ROOT_DIR, "bazelrc-graph")
 CASES_DIR = os.path.join(TESTS_DIR, "cases")
 
 
