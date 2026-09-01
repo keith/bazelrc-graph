@@ -262,22 +262,28 @@ def _main():
         "-o",
         "--output-dir",
         default=".",
-        help="directory the .dot and .png are written to (default: cwd)",
+        help="directory the output files are written to (default: cwd)",
     )
     parser.add_argument(
         "--name",
         default="bazelrc-graph",
         help="base name of the output files (default: bazelrc-graph)",
     )
-    parser.add_argument(
+    render_group = parser.add_mutually_exclusive_group()
+    render_group.add_argument(
         "--no-png",
         action="store_true",
         help="only write the .dot file, skip rendering the png",
     )
+    render_group.add_argument(
+        "--svg",
+        action="store_true",
+        help="render an .svg instead of a .png",
+    )
     parser.add_argument(
         "--open",
         action="store_true",
-        help="open the rendered png when done",
+        help="open the rendered image when done",
     )
     args = parser.parse_args()
 
@@ -299,22 +305,25 @@ def _main():
     if args.no_png:
         return 0
 
-    png_path = os.path.join(args.output_dir, args.name + ".png")
+    output_format = "svg" if args.svg else "png"
+    image_path = os.path.join(args.output_dir, args.name + "." + output_format)
     try:
-        subprocess.run(["dot", "-Tpng", "-o", png_path, dot_path], check=True)
+        subprocess.run(
+            ["dot", "-T" + output_format, "-o", image_path, dot_path], check=True
+        )
     except FileNotFoundError:
         print(
-            "warning: graphviz 'dot' not found, skipping png rendering",
+            f"warning: graphviz 'dot' not found, skipping {output_format} rendering",
             file=sys.stderr,
         )
         return 1
     except subprocess.CalledProcessError as error:
         print(f"error: dot failed: {error}", file=sys.stderr)
         return 1
-    print(png_path)
+    print(image_path)
 
     if args.open:
-        return open_file(png_path)
+        return open_file(image_path)
     return 0
 
 

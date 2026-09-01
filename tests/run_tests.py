@@ -114,17 +114,19 @@ def run_case(case_dir, update):
     return ok
 
 
-def png_smoke_test(case_dir):
-    """Render one case to png to check the dot output is valid graphviz."""
+def render_smoke_test(case_dir, output_format):
+    """Render one case to check the dot output is valid graphviz."""
     if shutil.which("dot") is None:
-        print("SKIP png smoke test: graphviz 'dot' not installed")
+        print(f"SKIP {output_format} smoke test: graphviz 'dot' not installed")
         return True
     name = os.path.basename(case_dir)
     with tempfile.TemporaryDirectory() as out_dir:
+        format_args = ["--svg"] if output_format == "svg" else []
         result = subprocess.run(
             [
                 sys.executable,
                 TOOL,
+                *format_args,
                 "--workspace",
                 case_dir,
                 "--output-dir",
@@ -135,12 +137,12 @@ def png_smoke_test(case_dir):
             text=True,
             check=False,
         )
-        png = os.path.join(out_dir, "bazelrc-graph.png")
-        if result.returncode != 0 or not os.path.isfile(png):
-            print(f"FAIL png smoke test ({name}): no png produced")
+        image = os.path.join(out_dir, "bazelrc-graph." + output_format)
+        if result.returncode != 0 or not os.path.isfile(image):
+            print(f"FAIL {output_format} smoke test ({name}): no image produced")
             sys.stdout.write(result.stderr)
             return False
-    print(f"PASS png smoke test ({name})")
+    print(f"PASS {output_format} smoke test ({name})")
     return True
 
 
@@ -172,7 +174,9 @@ def main():
     for case in cases:
         ok = run_case(os.path.join(CASES_DIR, case), args.update) and ok
     if not args.update and cases:
-        ok = png_smoke_test(os.path.join(CASES_DIR, cases[0])) and ok
+        first_case = os.path.join(CASES_DIR, cases[0])
+        ok = render_smoke_test(first_case, "png") and ok
+        ok = render_smoke_test(first_case, "svg") and ok
 
     if not ok:
         sys.exit(1)
