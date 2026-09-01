@@ -242,14 +242,14 @@ def open_file(path):
         opener = "open"
     elif sys.platform.startswith("win"):
         os.startfile(path)  # type: ignore[attr-defined]
-        return
+        return 0
     else:
         opener = "xdg-open"
-    subprocess.Popen(
+    return subprocess.run(
         [opener, path],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
-    )
+    ).returncode
 
 
 def _main():
@@ -321,7 +321,7 @@ def _main():
     print(png_path)
 
     if args.open:
-        open_file(png_path)
+        return open_file(png_path)
     return 0
 
 
