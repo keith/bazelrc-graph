@@ -29,7 +29,7 @@ def run_case(case_dir, update):
     name = os.path.basename(case_dir)
     root_rc = os.path.join(case_dir, ".bazelrc")
     if not os.path.isfile(root_rc):
-        print("FAIL {}: no .bazelrc in case directory".format(name))
+        print(f"FAIL {name}: no .bazelrc in case directory")
         return False
 
     with tempfile.TemporaryDirectory() as out_dir:
@@ -46,9 +46,10 @@ def run_case(case_dir, update):
             ],
             capture_output=True,
             text=True,
+            check=False,
         )
         if result.returncode != 0:
-            print("FAIL {}: tool exited {}".format(name, result.returncode))
+            print(f"FAIL {name}: tool exited {result.returncode}")
             sys.stdout.write(result.stderr)
             return False
         with open(os.path.join(out_dir, "bazelrc-graph.dot")) as handle:
@@ -70,18 +71,18 @@ def run_case(case_dir, update):
                 handle.write(actual_warnings)
         elif os.path.exists(expected_warnings_path):
             os.remove(expected_warnings_path)
-        print("UPDATED {}".format(name))
+        print(f"UPDATED {name}")
         return True
 
     ok = True
     if not os.path.isfile(expected_dot_path):
-        print("FAIL {}: missing expected.dot (run with --update)".format(name))
+        print(f"FAIL {name}: missing expected.dot (run with --update)")
         ok = False
     else:
         with open(expected_dot_path) as handle:
             expected_dot = handle.read()
         if actual_dot != expected_dot:
-            print("FAIL {}: dot output differs".format(name))
+            print(f"FAIL {name}: dot output differs")
             sys.stdout.writelines(
                 difflib.unified_diff(
                     expected_dot.splitlines(keepends=True),
@@ -97,7 +98,7 @@ def run_case(case_dir, update):
         with open(expected_warnings_path) as handle:
             expected_warnings = handle.read()
     if actual_warnings != expected_warnings:
-        print("FAIL {}: warnings differ".format(name))
+        print(f"FAIL {name}: warnings differ")
         sys.stdout.writelines(
             difflib.unified_diff(
                 expected_warnings.splitlines(keepends=True),
@@ -109,7 +110,7 @@ def run_case(case_dir, update):
         ok = False
 
     if ok:
-        print("PASS {}".format(name))
+        print(f"PASS {name}")
     return ok
 
 
@@ -132,13 +133,14 @@ def png_smoke_test(case_dir):
             ],
             capture_output=True,
             text=True,
+            check=False,
         )
         png = os.path.join(out_dir, "bazelrc-graph.png")
         if result.returncode != 0 or not os.path.isfile(png):
-            print("FAIL png smoke test ({}): no png produced".format(name))
+            print(f"FAIL png smoke test ({name}): no png produced")
             sys.stdout.write(result.stderr)
             return False
-    print("PASS png smoke test ({})".format(name))
+    print(f"PASS png smoke test ({name})")
     return True
 
 
