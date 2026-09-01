@@ -1,0 +1,27 @@
+digraph bazelrc {
+  rankdir=LR;
+  fontname="Helvetica";
+  node [fontname="Helvetica"];
+  edge [fontname="Helvetica"];
+
+  // Config graph
+  "config: apple-clang" [label="apple-clang", shape=ellipse];
+  "config: gcc" [label="gcc", shape=ellipse];
+  "config: linux" [label="linux", shape=box];
+  "config: macos" [label="macos", shape=box];
+  "config: msvc" [label="msvc", shape=ellipse];
+  "config: windows" [label="windows", shape=box];
+  "config: linux" -> "config: gcc";
+  "config: macos" -> "config: apple-clang";
+  "config: windows" -> "config: msvc";
+
+  // File import graph
+  subgraph cluster_imports {
+    label="file imports";
+    fontsize=10;
+    style="rounded,dashed";
+    color="#999999";
+    node [shape=note, fontsize=10];
+    "file: .bazelrc" [label=".bazelrc"];
+  }
+}

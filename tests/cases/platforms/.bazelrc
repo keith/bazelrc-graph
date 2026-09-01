@@ -1,0 +1,7 @@
+common --enable_platform_specific_config
+common:macos --config=apple-clang
+common:linux --config=gcc
+common:windows --config=msvc
+build:apple-clang --features=oso_prefix_is_pwd
+build:gcc --copt=-fdiagnostics-color
+build:msvc --copt=/W3
