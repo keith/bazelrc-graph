@@ -15,7 +15,7 @@ with `--svg`) to the current directory (rendering the image requires
 
 Example:
 
-[![Example graph](example.svg)
+![Example graph](example.svg)
 
 Automatically open the generated image:
 
