@@ -1,0 +1,18 @@
+digraph bazelrc {
+  rankdir=LR;
+  fontname="Helvetica";
+  node [fontname="Helvetica"];
+  edge [fontname="Helvetica"];
+
+  // Config graph
+
+  // File import graph
+  subgraph cluster_imports {
+    label="file imports";
+    fontsize=10;
+    style="rounded,dashed";
+    color="#999999";
+    node [shape=note, fontsize=10];
+    "file: .bazelrc" [label=".bazelrc"];
+  }
+}
