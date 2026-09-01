@@ -18,10 +18,19 @@ drawn as boxes.
 import argparse
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 
 _PLATFORM_CONFIGS = {"linux", "macos", "windows", "freebsd", "openbsd"}
+_GRAPHVIZ_INSTALL_COMMANDS = (
+    ("brew", "brew install graphviz"),
+    ("port", "sudo port install graphviz"),
+    ("apt", "sudo apt install graphviz"),
+    ("dnf", "sudo dnf install graphviz"),
+    ("choco", "choco install graphviz"),
+    ("winget", "winget install graphviz"),
+)
 
 # Sentinel for flags that appear outside any config (e.g. `build --config=x`).
 _DEFAULT = "<default>"
@@ -244,6 +253,27 @@ def open_file(path):
     ).returncode
 
 
+def _print_graphviz_missing(output_format):
+    print(
+        f"warning: graphviz 'dot' not found, skipping {output_format} rendering",
+        file=sys.stderr,
+    )
+    install_commands = [
+        command
+        for executable, command in _GRAPHVIZ_INSTALL_COMMANDS
+        if shutil.which(executable)
+    ]
+    if install_commands:
+        print("hint: install Graphviz with one of:", file=sys.stderr)
+        for command in install_commands:
+            print(f"  {command}", file=sys.stderr)
+    else:
+        print(
+            "hint: install Graphviz from https://graphviz.org/download/",
+            file=sys.stderr,
+        )
+
+
 def _main():
     parser = argparse.ArgumentParser(
         description="Graph the config structure of bazelrc files."
@@ -312,10 +342,7 @@ def _main():
             ["dot", "-T" + output_format, "-o", image_path, dot_path], check=True
         )
     except FileNotFoundError:
-        print(
-            f"warning: graphviz 'dot' not found, skipping {output_format} rendering",
-            file=sys.stderr,
-        )
+        _print_graphviz_missing(output_format)
         return 1
     except subprocess.CalledProcessError as error:
         print(f"error: dot failed: {error}", file=sys.stderr)
